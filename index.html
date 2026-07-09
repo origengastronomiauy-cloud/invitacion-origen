@@ -11,212 +11,91 @@
     
     <style>
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+            margin: 0; padding: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, #2a2a2a 0%, #050505 100%);
-            font-family: 'Montserrat', sans-serif;
-            overflow: hidden; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Montserrat', sans-serif; overflow: hidden; 
+            display: flex; justify-content: center; align-items: center;
         }
 
-        .scene {
-            perspective: 1200px;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+        .scene { perspective: 1200px; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
 
-        .wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.5s ease;
-        }
+        .wrapper { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; transition: transform 0.5s ease; }
 
         @media (max-width: 768px) { .wrapper { transform: scale(0.8); } }
         @media (max-width: 480px) { .wrapper { transform: scale(0.65); } }
 
         .envelope-container {
-            position: relative;
-            width: 400px;
-            height: 250px;
-            cursor: pointer;
-            transition: transform 0.4s ease;
-            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9));
+            position: relative; width: 400px; height: 250px; cursor: pointer;
+            transition: transform 0.4s ease; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9));
         }
 
-        .envelope-container:hover {
-            transform: translateY(-8px);
-        }
-
-        .envelope-container.open {
-            cursor: default;
-            transform: none; 
-        }
+        .envelope-container.open { cursor: default; transform: none; }
 
         .hint-text {
-            position: absolute;
-            bottom: -50px;
-            width: 100%;
-            text-align: center;
-            color: #d4af37;
-            font-size: 12px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            animation: pulse 2s infinite;
-            transition: opacity 0.5s ease;
-            pointer-events: none;
+            position: absolute; bottom: -50px; width: 100%; text-align: center;
+            color: #d4af37; font-size: 12px; letter-spacing: 3px;
+            text-transform: uppercase; animation: pulse 2s infinite; pointer-events: none;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
-        .back {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #111; z-index: 1;
-        }
+        .back { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 1; }
+        .front-left { position: absolute; top: 0; left: 0; width: 200px; height: 250px; background: #1c1c1c; clip-path: polygon(0 0, 0 100%, 100% 50%); z-index: 3; }
+        .front-right { position: absolute; top: 0; right: 0; width: 200px; height: 250px; background: #1c1c1c; clip-path: polygon(100% 0, 100% 100%, 0 50%); z-index: 3; }
+        .front-bottom { position: absolute; bottom: 0; left: 0; width: 100%; height: 150px; background: #151515; clip-path: polygon(0 100%, 100% 100%, 50% 0); z-index: 4; }
 
-        .front-left {
-            position: absolute; top: 0; left: 0;
-            width: 200px; height: 250px; background: #1c1c1c;
-            clip-path: polygon(0 0, 0 100%, 100% 50%); z-index: 3;
-        }
-
-        .front-right {
-            position: absolute; top: 0; right: 0;
-            width: 200px; height: 250px; background: #1c1c1c;
-            clip-path: polygon(100% 0, 100% 100%, 0 50%); z-index: 3;
-        }
-
-        .front-bottom {
-            position: absolute; bottom: 0; left: 0;
-            width: 100%; height: 150px; background: #151515;
-            clip-path: polygon(0 100%, 100% 100%, 50% 0); z-index: 4;
-            border-top: 1px solid rgba(255,255,255,0.02);
-        }
-
-        .flap {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 150px;
-            transform-origin: top center;
-            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 5; transform-style: preserve-3d;
-        }
-
-        .flap-shape {
-            width: 100%; height: 100%; background: #222;
-            clip-path: polygon(0 0, 100% 0, 50% 100%);
-        }
-
+        .flap { position: absolute; top: 0; left: 0; width: 100%; height: 150px; transform-origin: top center; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); z-index: 5; transform-style: preserve-3d; }
+        .flap-shape { width: 100%; height: 100%; background: #222; clip-path: polygon(0 0, 100% 0, 50% 100%); }
         .seal {
-            position: absolute; bottom: -25px; left: 50%; margin-left: -30px;
-            width: 60px; height: 60px;
-            background: linear-gradient(135deg, #d4af37, #8a6519);
-            border: 2px solid #f9df9f; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            color: #fff; font-family: 'Playfair Display', serif;
-            font-weight: bold; font-size: 18px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.4);
-            background-size: 200% 200%;
-            animation: shimmer 4s infinite linear;
+            position: absolute; bottom: -25px; left: 50%; margin-left: -30px; width: 60px; height: 60px;
+            background: linear-gradient(135deg, #d4af37, #8a6519); border: 2px solid #f9df9f; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; color: #fff; font-family: 'Playfair Display', serif;
+            font-weight: bold; font-size: 18px; animation: shimmer 4s infinite linear;
         }
 
-        @keyframes shimmer {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        @keyframes shimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
+        /* ARREGLO DEL BOTÓN: Cambiado de altura fija a auto */
         .card {
-            position: absolute; top: 10px; left: 10px;
-            width: 380px; height: 230px;
-            background: #0a0a0a; 
-            z-index: 2;
-            transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
-            border-radius: 4px; box-sizing: border-box;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            overflow: hidden; 
+            position: absolute; top: 10px; left: 10px; width: 380px; height: auto; min-height: 230px;
+            background: #0a0a0a; z-index: 2; transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+            border-radius: 4px; box-sizing: border-box; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            overflow: visible; padding: 10px;
         }
 
         .card-border {
-            position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
-            border: 1px solid #c59d5f; 
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 5px 15px; 
+            border: 1px solid #c59d5f; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; padding: 15px; 
             text-align: center; box-sizing: border-box;
         }
 
-        .logo-img {
-            height: 55px; 
-            width: auto; margin: 4px 0; object-fit: contain;
-        }
-
-        .card .subtitle {
-            font-size: 9px; color: #c59d5f; text-transform: uppercase;
-            letter-spacing: 3px; margin-bottom: 2px; font-weight: 600;
-        }
-
-        .card .divider {
-            width: 50px; height: 1px; background: #c59d5f; margin: 6px 0; 
-        }
-
-        .card .details {
-            font-family: 'Playfair Display', serif; font-size: 11px; 
-            color: #d1d1d1; line-height: 1.4; margin: 0 0 8px 0; padding: 0 10px;
-        }
-
-        .card .footer-info {
-            display: flex; justify-content: space-between; width: 90%;
-            margin-bottom: 6px; border-top: 1px solid #333; padding-top: 6px; 
-        }
+        .logo-img { height: 55px; width: auto; margin: 4px 0; object-fit: contain; }
+        .card .subtitle { font-size: 9px; color: #c59d5f; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 2px; font-weight: 600; }
+        .card .divider { width: 50px; height: 1px; background: #c59d5f; margin: 6px 0; }
+        .card .details { font-family: 'Playfair Display', serif; font-size: 11px; color: #d1d1d1; line-height: 1.4; margin: 0 0 8px 0; }
+        .card .footer-info { display: flex; justify-content: space-between; width: 100%; margin: 6px 0; border-top: 1px solid #333; padding-top: 6px; }
 
         .info-block { display: flex; flex-direction: column; align-items: center; }
-
         .info-block .label { font-size: 7px; color: #888; letter-spacing: 1px; margin-bottom: 3px; }
-
         .info-block .value { font-size: 10px; font-weight: 600; color: #fdfbf7; }
 
         .rsvp-btn {
             background: #111; color: #d4af37; border: 1px solid #d4af37;
-            padding: 6px 20px; font-family: 'Montserrat', sans-serif;
-            font-size: 10px; font-weight: 600; letter-spacing: 2px;
-            cursor: pointer; transition: all 0.3s ease; opacity: 0; 
-            pointer-events: none; margin-top: 4px;
+            padding: 8px 20px; font-family: 'Montserrat', sans-serif; font-size: 10px;
+            font-weight: 600; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease;
+            margin-top: 10px;
         }
 
-        .rsvp-btn:hover { background: #d4af37; color: #111; border-color: #d4af37; }
-
-        .rsvp-form { display: none; width: 90%; margin-bottom: 4px; }
-
+        .rsvp-btn:hover { background: #d4af37; color: #111; }
+        .rsvp-form { display: none; width: 100%; margin-top: 10px; }
         .vip-input {
             width: 100%; background: transparent; border: none; border-bottom: 1px solid #c59d5f;
             color: #fdfbf7; font-family: 'Montserrat', sans-serif; font-size: 11px;
-            padding: 4px 0; margin-bottom: 6px; outline: none; transition: border-color 0.3s;
+            padding: 8px 0; margin-bottom: 6px; outline: none; box-sizing: border-box;
         }
 
-        .vip-input:focus { border-bottom: 2px solid #d4af37; }
-        .vip-input::placeholder { color: #555; text-transform: uppercase; letter-spacing: 1px; }
-
-        .error-msg { color: #d32f2f; font-size: 9px; margin-top: -3px; margin-bottom: 4px; display: none; font-weight: bold; }
-
-        .hide-envelope .back, .hide-envelope .front-left, .hide-envelope .front-right, .hide-envelope .front-bottom, .hide-envelope .flap {
-            opacity: 0; transition: opacity 1s ease; pointer-events: none;
-        }
-
-        .card.fullscreen { transform: translateY(-40px) scale(1.6); z-index: 10; }
+        .hide-envelope .back, .hide-envelope .front-left, .hide-envelope .front-right, .hide-envelope .front-bottom, .hide-envelope .flap { opacity: 0; }
+        .card.fullscreen { transform: translateY(-40px) scale(1.4); z-index: 10; }
     </style>
 </head>
 <body>
@@ -224,53 +103,33 @@
     <div class="scene">
         <div class="wrapper">
             <div class="envelope-container" id="envelope">
-                
                 <div class="hint-text" id="hint">Toca para descubrir</div>
-
                 <div class="back"></div>
                 
                 <div class="card" id="card">
                     <div class="card-border">
                         <div class="subtitle">Lanzamiento</div>
-                        <!-- LOGO QUE SE ADAPTA AL FONDO NEGRO -->
-                        <img src="logo.png" alt="Logo Origen" class="logo-img" onerror="this.src='https://placehold.co/150x45/0a0a0a/d4af37?text=ORIGEN'">
+                        <img src="logo.jpg" alt="Logo Origen" class="logo-img" onerror="this.src='https://placehold.co/150x45/0a0a0a/d4af37?text=ORIGEN'">
                         <div class="divider"></div>
                         <p class="details">Tenemos el inmenso honor de invitarte a una velada única, reservada estrictamente para nuestros aliados más selectos.</p>
                         
                         <div class="footer-info">
-                            <div class="info-block">
-                                <span class="label">FECHA</span>
-                                <span class="value">30 JUL 2026</span>
-                            </div>
-                            <div class="info-block">
-                                <span class="label">DRESS CODE</span>
-                                <span class="value">Elegante</span>
-                            </div>
-                            <div class="info-block">
-                                <span class="label">LUGAR</span>
-                                <span class="value">Café Brasilero</span>
-                            </div>
+                            <div class="info-block"><span class="label">FECHA</span><span class="value">30 JUL 2026</span></div>
+                            <div class="info-block"><span class="label">DRESS CODE</span><span class="value">Elegante</span></div>
+                            <div class="info-block"><span class="label">LUGAR</span><span class="value">Café Brasilero</span></div>
                         </div>
 
                         <div class="rsvp-form" id="rsvp-form">
                             <input type="text" id="guest-name" class="vip-input" placeholder="Tu Nombre Completo" required>
                             <input type="email" id="guest-email" class="vip-input" placeholder="Tu Correo Electrónico" required>
-                            <div class="error-msg" id="error-msg">Por favor, completa ambos campos.</div>
                         </div>
 
                         <button class="rsvp-btn" id="rsvp-btn" onclick="confirmarAsistencia(event)">CONFIRMAR ASISTENCIA</button>
                     </div>
                 </div>
 
-                <div class="front-left"></div>
-                <div class="front-right"></div>
-                <div class="front-bottom"></div>
-                
-                <div class="flap" id="flap">
-                    <div class="flap-shape"></div>
-                    <div class="seal">VIP</div>
-                </div>
-
+                <div class="front-left"></div> <div class="front-right"></div> <div class="front-bottom"></div>
+                <div class="flap" id="flap"><div class="flap-shape"></div><div class="seal">VIP</div></div>
             </div>
         </div>
     </div>
@@ -286,37 +145,26 @@
         envelope.addEventListener('click', () => {
             if (isOpen) return; 
             isOpen = true;
-
             envelope.classList.add('open');
             hint.style.opacity = '0'; 
-
             flap.style.transform = 'rotateX(180deg)';
-
             setTimeout(() => {
                 flap.style.zIndex = '1'; 
                 card.style.transform = 'translateY(-170px)'; 
                 card.style.zIndex = '6'; 
             }, 500);
-
             setTimeout(() => {
                 envelope.classList.add('hide-envelope');
                 card.classList.add('fullscreen');
             }, 1500);
-
-            setTimeout(() => {
-                rsvpBtn.style.opacity = '1';
-                rsvpBtn.style.pointerEvents = 'auto';
-            }, 2500);
         });
 
-        // AQUÍ YA ESTÁ PEGADO TU ENLACE, NO TIENES QUE TOCARLO
+        // PEGA AQUÍ TU URL
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVsWI13er8imv0ZeQ6NqJtH0Of2fZ0cV_SKsk7NRIgGQRz9PrdrAjBZpe42nmwwAai/exec';
 
         function confirmarAsistencia(e) {
-            e.stopPropagation(); 
             const btn = e.target;
             const form = document.getElementById('rsvp-form');
-            const errorMsg = document.getElementById('error-msg');
             const nameInput = document.getElementById('guest-name');
             const emailInput = document.getElementById('guest-email');
             
@@ -327,72 +175,23 @@
             }
 
             if (nameInput.value.trim() === '' || emailInput.value.trim() === '') {
-                errorMsg.style.display = 'block';
                 return;
             }
-            errorMsg.style.display = 'none';
 
             btn.innerHTML = "PROCESANDO...";
-            btn.style.pointerEvents = 'none';
-
             fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors', 
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                method: 'POST', mode: 'no-cors',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: `nombre=${encodeURIComponent(nameInput.value)}&email=${encodeURIComponent(emailInput.value)}`
             })
             .then(() => {
                 form.style.display = 'none';
-                
                 btn.innerHTML = "¡CONFIRMADO! ✔";
-                btn.style.background = "#d4af37";
-                btn.style.color = "#111";
-                btn.style.transform = "scale(1.05)";
-
-                lanzarConfeti(btn);
             })
-            .catch(error => {
-                btn.innerHTML = "ERROR, REINTENTAR";
-                btn.style.pointerEvents = 'auto';
-            });
-        }
-
-        function lanzarConfeti(btnElement) {
-            const colors = ['#d4af37', '#f9df9f', '#ffffff', '#111111'];
-            const rect = btnElement.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
-            for(let i = 0; i < 40; i++) {
-                const particle = document.createElement('div');
-                particle.style.position = 'fixed';
-                particle.style.width = '6px';
-                particle.style.height = '6px';
-                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-                particle.style.pointerEvents = 'none';
-                particle.style.zIndex = '1000';
-                particle.style.left = centerX + 'px';
-                particle.style.top = centerY + 'px';
-
-                document.body.appendChild(particle);
-
-                const angle = Math.random() * Math.PI * 2;
-                const velocity = 40 + Math.random() * 120;
-                const tx = Math.cos(angle) * velocity;
-                const ty = Math.sin(angle) * velocity - 80; 
-
-                particle.animate([
-                    { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-                    { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
-                ], {
-                    duration: 800 + Math.random() * 600,
-                    easing: 'cubic-bezier(0, 0.9, 0.5, 1)' 
-                }).onfinish = () => particle.remove(); 
-            }
+            .catch(() => { btn.innerHTML = "ERROR, REINTENTAR"; });
         }
     </script>
+</body>
+</html>
 </body>
 </html>
