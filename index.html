@@ -4,103 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invitación Exclusiva VIP</title>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-    
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #2a2a2a 0%, #050505 100%); font-family: 'Montserrat', sans-serif; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .scene { perspective: 1200px; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        .wrapper { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; transition: transform 0.5s ease; }
+        .wrapper { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
         
-        .envelope-container { position: relative; width: 400px; height: 250px; cursor: pointer; transition: transform 0.4s ease; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9)); }
-        .envelope-container.open { cursor: default; transform: none; }
-        
-        .hint-text { position: absolute; bottom: -50px; width: 100%; text-align: center; color: #d4af37; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; animation: pulse 2s infinite; transition: opacity 0.5s ease; pointer-events: none; }
-        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        .envelope-container { position: relative; width: 400px; height: 250px; cursor: pointer; transition: transform 0.4s ease; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9)); z-index: 5; }
+        .envelope-container.open { cursor: default; }
 
-        .back { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 1; }
-        .front-left { position: absolute; top: 0; left: 0; width: 200px; height: 250px; background: #1c1c1c; clip-path: polygon(0 0, 0 100%, 100% 50%); z-index: 3; }
-        .front-right { position: absolute; top: 0; right: 0; width: 200px; height: 250px; background: #1c1c1c; clip-path: polygon(100% 0, 100% 100%, 0 50%); z-index: 3; }
-        .front-bottom { position: absolute; bottom: 0; left: 0; width: 100%; height: 150px; background: #151515; clip-path: polygon(0 100%, 100% 100%, 50% 0); z-index: 4; border-top: 1px solid rgba(255,255,255,0.02); }
+        /* Piezas del Sobre */
+        .back, .front-left, .front-right, .front-bottom, .flap { position: absolute; top:0; left:0; width:100%; height:100%; transition: opacity 1s ease; }
+        .back { background: #111; z-index: 1; }
+        .front-left { background: #1c1c1c; clip-path: polygon(0 0, 0 100%, 100% 50%); z-index: 3; }
+        .front-right { background: #1c1c1c; clip-path: polygon(100% 0, 100% 100%, 0 50%); z-index: 3; }
+        .front-bottom { background: #151515; clip-path: polygon(0 100%, 100% 100%, 50% 0); z-index: 4; }
+        .flap { transform-origin: top center; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); z-index: 5; clip-path: polygon(0 0, 100% 0, 50% 100%); background: #222; }
+        .seal { position: absolute; bottom: 20px; left: 50%; margin-left: -30px; width: 60px; height: 60px; background: linear-gradient(135deg, #d4af37, #8a6519); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-family: 'Playfair Display', serif; font-weight: bold; font-size: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); z-index: 6; }
 
-        .flap { position: absolute; top: 0; left: 0; width: 100%; height: 150px; transform-origin: top center; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); z-index: 5; transform-style: preserve-3d; }
-        .flap-shape { width: 100%; height: 100%; background: #222; clip-path: polygon(0 0, 100% 0, 50% 100%); }
-        .seal { position: absolute; bottom: -25px; left: 50%; margin-left: -30px; width: 60px; height: 60px; background: linear-gradient(135deg, #d4af37, #8a6519); border: 2px solid #f9df9f; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-family: 'Playfair Display', serif; font-weight: bold; font-size: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
+        /* Tarjeta */
+        .card { position: absolute; top: 10px; left: 10px; width: 380px; height: auto; min-height: 230px; background: #0a0a0a; z-index: 2; transition: all 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; padding: 20px; box-sizing: border-box; border: 1px solid #c59d5f; }
+        .card.is-active { z-index: 10; transform: scale(1.2); top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1.2); }
 
-        .card { position: absolute; top: 10px; left: 10px; width: 380px; background: #0a0a0a; z-index: 2; transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); overflow: visible; display: flex; flex-direction: column; height: auto; padding-bottom: 20px;}
-        .card-border { border: 1px solid #c59d5f; display: flex; flex-direction: column; align-items: center; padding: 20px 15px; text-align: center; }
-        
-        .logo-img { height: 45px; width: auto; margin: 4px 0; object-fit: contain; }
-        .subtitle { font-size: 9px; color: #c59d5f; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 5px; font-weight: 600; }
-        .card h2 { font-family: 'Playfair Display', serif; font-size: 24px; color: #fdfbf7; letter-spacing: 4px; margin: 0; }
+        .logo-img { height: 45px; width: auto; margin-bottom: 10px; }
+        .subtitle { font-size: 9px; color: #c59d5f; text-transform: uppercase; letter-spacing: 3px; }
         .divider { width: 50px; height: 2px; background: #c59d5f; margin: 10px 0; }
-        .details { font-family: 'Playfair Display', serif; font-size: 11px; color: #d1d1d1; line-height: 1.4; margin: 0 0 15px 0; padding: 0 10px; }
-        
-        .footer-info { display: flex; justify-content: space-between; width: 90%; margin-bottom: 15px; border-top: 1px solid #333; padding-top: 15px; }
+        .details { font-family: 'Playfair Display', serif; font-size: 13px; color: #d1d1d1; text-align: center; margin-bottom: 15px; }
+        .footer-info { display: flex; justify-content: space-between; width: 100%; border-top: 1px solid #333; padding-top: 10px; margin-bottom: 15px; }
         .info-block { display: flex; flex-direction: column; align-items: center; }
-        .label { font-size: 8px; color: #888; letter-spacing: 1px; margin-bottom: 4px; }
-        .value { font-size: 11px; font-weight: 600; color: #fdfbf7; }
+        .label { font-size: 8px; color: #888; letter-spacing: 1px; }
+        .value { font-size: 11px; font-weight: 600; color: #fdfbf7; margin-top: 4px; }
 
-        .rsvp-btn { background: #111; color: #d4af37; border: 1px solid #d4af37; padding: 8px 20px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; opacity: 0; pointer-events: none; margin-top: 10px; }
-        .rsvp-btn:hover { background: #d4af37; color: #111; }
-
-        .rsvp-form { display: none; width: 90%; margin-bottom: 10px; }
-        .vip-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #c59d5f; color: #fdfbf7; font-family: 'Montserrat', sans-serif; font-size: 11px; padding: 5px 0; margin-bottom: 10px; outline: none; }
-        .error-msg { color: #d32f2f; font-size: 9px; margin-bottom: 5px; display: none; font-weight: bold; }
-
-        .hide-envelope { opacity: 0; transition: opacity 1s ease; pointer-events: none; }
-        .card.fullscreen { transform: translateY(-40px) scale(1.6); z-index: 10; }
+        .rsvp-form { display: none; width: 100%; }
+        .vip-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #c59d5f; color: #fdfbf7; font-family: 'Montserrat', sans-serif; font-size: 12px; padding: 5px 0; margin-bottom: 10px; outline: none; box-sizing: border-box; }
+        .rsvp-btn { background: #111; color: #d4af37; border: 1px solid #d4af37; padding: 10px 20px; cursor: pointer; width: 100%; font-size: 12px; margin-top: 10px; }
+        .hide-envelope { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
 
     <div class="scene">
         <div class="wrapper">
-            <div class="envelope-container" id="envelope">
-                <div class="hint-text" id="hint">Toca para descubrir</div>
-                <div class="back"></div>
+            <!-- La tarjeta ahora está fuera del contenedor del sobre para que no desaparezca -->
+            <div class="card" id="card">
+                <div class="subtitle">Lanzamiento</div>
+                <img src="logo.png" alt="Logo" class="logo-img" onerror="this.src='https://placehold.co/150x45/0a0a0a/d4af37?text=ORIGEN'">
+                <div class="divider"></div>
+                <p class="details">Un viaje en el tiempo, donde la cultura se sienta en tu mesa.</p>
                 
-                <div class="card" id="card">
-                    <div class="card-border">
-                        <div class="subtitle">Lanzamiento</div>
-                        <img src="logo.jpg" alt="Logo Origen" class="logo-img" onerror="this.src='https://placehold.co/150x45/0a0a0a/d4af37?text=ORIGEN'">
-                        <div class="divider"></div>
-                        <p class="details">Un viaje en el tiempo, donde la cultura se sienta en tu mesa.</p>
-                        
-                        <div class="footer-info">
-                            <div class="info-block">
-                                <span class="label">FECHA</span>
-                                <span class="value">14 AGO 2026</span>
-                            </div>
-                            <div class="info-block">
-                                <span class="label">HORA</span>
-                                <span class="value">18HRS</span>
-                            </div>
-                            <div class="info-block">
-                                <span class="label">LUGAR</span>
-                                <span class="value">Café Brasilero</span>
-                            </div>
-                        </div>
-
-                        <div class="rsvp-form" id="rsvp-form">
-                            <input type="text" id="guest-name" class="vip-input" placeholder="Tu Nombre Completo" required>
-                            <input type="tel" id="guest-phone" class="vip-input" placeholder="Tu Teléfono de Contacto" required>
-                            <div class="error-msg" id="error-msg">Por favor, completa ambos campos.</div>
-                        </div>
-
-                        <button class="rsvp-btn" id="rsvp-btn" onclick="confirmarAsistencia(event)">CONFIRMAR ASISTENCIA</button>
-                    </div>
+                <div class="footer-info">
+                    <div class="info-block"><span class="label">FECHA</span><span class="value">30 JUL 2026</span></div>
+                    <div class="info-block"><span class="label">HORA</span><span class="value">19 HRS</span></div>
+                    <div class="info-block"><span class="label">LUGAR</span><span class="value">Café Brasilero</span></div>
                 </div>
 
+                <div class="rsvp-form" id="rsvp-form">
+                    <input type="text" id="guest-name" class="vip-input" placeholder="Tu Nombre Completo">
+                    <input type="tel" id="guest-phone" class="vip-input" placeholder="Tu Teléfono">
+                </div>
+
+                <button class="rsvp-btn" id="rsvp-btn" onclick="confirmarAsistencia(event)">CONFIRMAR ASISTENCIA</button>
+            </div>
+
+            <!-- Sobre -->
+            <div class="envelope-container" id="envelope">
+                <div class="back"></div>
                 <div class="front-left"></div>
                 <div class="front-right"></div>
                 <div class="front-bottom"></div>
-                <div class="flap" id="flap">
-                    <div class="flap-shape"></div>
-                    <div class="seal">VIP</div>
-                </div>
+                <div class="flap" id="flap"><div class="seal">VIP</div></div>
             </div>
         </div>
     </div>
@@ -109,71 +83,39 @@
         const envelope = document.getElementById('envelope');
         const flap = document.getElementById('flap');
         const card = document.getElementById('card');
-        const rsvpBtn = document.getElementById('rsvp-btn');
+        const btn = document.getElementById('rsvp-btn');
         let isOpen = false;
 
         envelope.addEventListener('click', () => {
-            if (isOpen) return; 
+            if (isOpen) return;
             isOpen = true;
-            envelope.classList.add('open');
             flap.style.transform = 'rotateX(180deg)';
             setTimeout(() => {
-                flap.style.zIndex = '1'; 
-                card.style.transform = 'translateY(-170px)'; 
-            }, 500);
-            setTimeout(() => {
                 envelope.classList.add('hide-envelope');
-                card.classList.add('fullscreen');
-                rsvpBtn.style.opacity = '1';
-                rsvpBtn.style.pointerEvents = 'auto';
-            }, 1500);
+                card.classList.add('is-active');
+            }, 500);
         });
 
-        // ==========================================
-        // PEGA TU URL DE GOOGLE SCRIPT AQUÍ
-        // ==========================================
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVsWI13er8imv0ZeQ6NqJtH0Of2fZ0cV_SKsk7NRIgGQRz9PrdrAjBZpe42nmwwAai/exec';
-        // ==========================================
-
+        
         function confirmarAsistencia(e) {
-            e.stopPropagation(); 
-            const btn = e.target;
             const form = document.getElementById('rsvp-form');
-            const errorMsg = document.getElementById('error-msg');
-            const nameInput = document.getElementById('guest-name');
-            const phoneInput = document.getElementById('guest-phone');
-            
             if (form.style.display !== 'block') {
                 form.style.display = 'block';
-                btn.innerHTML = "ENVIAR DATOS VIP";
-                return; 
-            }
-
-            if (nameInput.value.trim() === '' || phoneInput.value.trim() === '') {
-                errorMsg.style.display = 'block';
+                btn.innerHTML = "ENVIAR DATOS";
                 return;
             }
-            errorMsg.style.display = 'none';
-
-            btn.innerHTML = "PROCESANDO...";
-            btn.style.pointerEvents = 'none';
-
+            const name = document.getElementById('guest-name').value;
+            const phone = document.getElementById('guest-phone').value;
+            if(!name || !phone) return alert("Completa los datos");
+            
+            btn.innerHTML = "ENVIANDO...";
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', 
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `nombre=${encodeURIComponent(nameInput.value)}&telefono=${encodeURIComponent(phoneInput.value)}`
-            })
-            .then(() => {
-                form.style.display = 'none';
-                btn.innerHTML = "¡CONFIRMADO! ✔";
-                btn.style.background = "#d4af37";
-                btn.style.color = "#111";
-            })
-            .catch(error => {
-                btn.innerHTML = "ERROR, REINTENTAR";
-                btn.style.pointerEvents = 'auto';
-            });
+                mode: 'no-cors',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `nombre=${encodeURIComponent(name)}&telefono=${encodeURIComponent(phone)}`
+            }).then(() => btn.innerHTML = "¡CONFIRMADO!");
         }
     </script>
 </body>
