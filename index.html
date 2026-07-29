@@ -42,17 +42,17 @@
         .card { 
             position: absolute; top: 10px; left: 10px; 
             width: 380px; 
-            height: 230px; /* ALTO FIJO: La mantiene perfectamente escondida en el sobre */
+            height: 230px;
             background: #0a0a0a; z-index: 2; 
             transition: all 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); 
             border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); 
             display: flex; flex-direction: column; align-items: center; 
             padding: 20px; box-sizing: border-box; border: 1px solid #c59d5f; 
-            overflow: hidden; /* CORTA lo que sobra para que no se vea por debajo */
+            overflow: hidden; 
         }
         
         .card.fullscreen { 
-            height: 350px; /* CRECE mágicamente cuando sale para mostrar el formulario */
+            height: 350px; 
             transform: translateY(-40px) scale(1.2) !important; 
             z-index: 10 !important; 
             overflow: visible; 
@@ -79,7 +79,13 @@
         .hide-envelope .front-bottom,
         .hide-envelope .flap {
             opacity: 0;
-            pointer-events: none; /* Esto hace que el botón sea 100% clickeable */
+            pointer-events: none; 
+        }
+
+        /* AJUSTE MOVIL */
+        @media (max-width: 450px) {
+            .wrapper { transform: scale(0.85); }
+            .card.fullscreen { transform: translateY(-40px) scale(1) !important; }
         }
     </style>
 </head>
@@ -145,7 +151,7 @@
 
             setTimeout(() => {
                 envelope.classList.add('hide-envelope'); 
-                card.style.transform = ''; // Limpiamos el salto para que el CSS tome el control
+                card.style.transform = ''; 
                 card.classList.add('fullscreen'); 
             }, 1500);
         });
