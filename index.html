@@ -10,28 +10,28 @@
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #2a2a2a 0%, #050505 100%); font-family: 'Montserrat', sans-serif; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .scene { perspective: 1200px; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        .wrapper { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        .wrapper { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
         
-        .envelope-container { position: relative; width: 400px; height: 250px; cursor: pointer; transition: transform 0.4s ease; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9)); z-index: 5; }
+        .envelope-container { position: relative; width: 400px; height: 250px; cursor: pointer; transition: transform 0.4s ease; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9)); z-index: 1; }
         .envelope-container.open { cursor: default; }
 
-        /* Piezas del Sobre */
-        .back, .front-left, .front-right, .front-bottom, .flap { position: absolute; top:0; left:0; width:100%; height:100%; transition: opacity 1s ease; }
-        .back { background: #111; z-index: 1; }
-        .front-left { background: #1c1c1c; clip-path: polygon(0 0, 0 100%, 100% 50%); z-index: 3; }
-        .front-right { background: #1c1c1c; clip-path: polygon(100% 0, 100% 100%, 0 50%); z-index: 3; }
-        .front-bottom { background: #151515; clip-path: polygon(0 100%, 100% 100%, 50% 0); z-index: 4; }
-        .flap { transform-origin: top center; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); z-index: 5; clip-path: polygon(0 0, 100% 0, 50% 100%); background: #222; }
-        .seal { position: absolute; bottom: 20px; left: 50%; margin-left: -30px; width: 60px; height: 60px; background: linear-gradient(135deg, #d4af37, #8a6519); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-family: 'Playfair Display', serif; font-weight: bold; font-size: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); z-index: 6; }
+        .back { position: absolute; top:0; left:0; width:100%; height:100%; background: #111; z-index: 1; transition: opacity 1s ease; }
+        .front-left { position: absolute; top:0; left:0; width:200px; height:250px; background: #1c1c1c; clip-path: polygon(0 0, 0 100%, 100% 50%); z-index: 3; transition: opacity 1s ease; }
+        .front-right { position: absolute; top:0; right:0; width:200px; height:250px; background: #1c1c1c; clip-path: polygon(100% 0, 100% 100%, 0 50%); z-index: 3; transition: opacity 1s ease; }
+        .front-bottom { position: absolute; bottom:0; left:0; width:100%; height:150px; background: #151515; clip-path: polygon(0 100%, 100% 100%, 50% 0); z-index: 4; transition: opacity 1s ease; }
+        
+        .flap { position: absolute; top:0; left:0; width:100%; height:150px; transform-origin: top center; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s ease; z-index: 5; }
+        .flap-shape { width: 100%; height: 100%; background: #222; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+        .seal { position: absolute; bottom: -25px; left: 50%; margin-left: -30px; width: 60px; height: 60px; background: linear-gradient(135deg, #d4af37, #8a6519); border: 2px solid #f9df9f; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-family: 'Playfair Display', serif; font-weight: bold; font-size: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
 
-        /* Tarjeta */
         .card { position: absolute; top: 10px; left: 10px; width: 380px; height: auto; min-height: 230px; background: #0a0a0a; z-index: 2; transition: all 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; padding: 20px; box-sizing: border-box; border: 1px solid #c59d5f; }
-        .card.is-active { z-index: 10; transform: scale(1.2); top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1.2); }
+        .card.fullscreen { transform: translateY(-40px) scale(1.2); z-index: 10; }
 
         .logo-img { height: 45px; width: auto; margin-bottom: 10px; }
         .subtitle { font-size: 9px; color: #c59d5f; text-transform: uppercase; letter-spacing: 3px; }
         .divider { width: 50px; height: 2px; background: #c59d5f; margin: 10px 0; }
         .details { font-family: 'Playfair Display', serif; font-size: 13px; color: #d1d1d1; text-align: center; margin-bottom: 15px; }
+        
         .footer-info { display: flex; justify-content: space-between; width: 100%; border-top: 1px solid #333; padding-top: 10px; margin-bottom: 15px; }
         .info-block { display: flex; flex-direction: column; align-items: center; }
         .label { font-size: 8px; color: #888; letter-spacing: 1px; }
@@ -39,42 +39,59 @@
 
         .rsvp-form { display: none; width: 100%; }
         .vip-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #c59d5f; color: #fdfbf7; font-family: 'Montserrat', sans-serif; font-size: 12px; padding: 5px 0; margin-bottom: 10px; outline: none; box-sizing: border-box; }
-        .rsvp-btn { background: #111; color: #d4af37; border: 1px solid #d4af37; padding: 10px 20px; cursor: pointer; width: 100%; font-size: 12px; margin-top: 10px; }
-        .hide-envelope { opacity: 0; pointer-events: none; }
+        .rsvp-btn { background: #111; color: #d4af37; border: 1px solid #d4af37; padding: 10px 20px; cursor: pointer; width: 100%; font-size: 12px; margin-top: 10px; font-weight: bold; transition: 0.3s; }
+        .rsvp-btn:hover { background: #d4af37; color: #111; }
+        
+        .hide-envelope .back,
+        .hide-envelope .front-left,
+        .hide-envelope .front-right,
+        .hide-envelope .front-bottom,
+        .hide-envelope .flap {
+            opacity: 0;
+            pointer-events: none; /* Esto permite hacer clic a través del sobre invisible hacia la tarjeta */
+        }
     </style>
 </head>
 <body>
-
     <div class="scene">
         <div class="wrapper">
-            <!-- La tarjeta ahora está fuera del contenedor del sobre para que no desaparezca -->
-            <div class="card" id="card">
-                <div class="subtitle">Lanzamiento</div>
-                <img src="logo.png" alt="Logo" class="logo-img" onerror="this.src='https://placehold.co/150x45/0a0a0a/d4af37?text=ORIGEN'">
-                <div class="divider"></div>
-                <p class="details">Un viaje en el tiempo, donde la cultura se sienta en tu mesa.</p>
-                
-                <div class="footer-info">
-                    <div class="info-block"><span class="label">FECHA</span><span class="value">30 JUL 2026</span></div>
-                    <div class="info-block"><span class="label">HORA</span><span class="value">19 HRS</span></div>
-                    <div class="info-block"><span class="label">LUGAR</span><span class="value">Café Brasilero</span></div>
-                </div>
-
-                <div class="rsvp-form" id="rsvp-form">
-                    <input type="text" id="guest-name" class="vip-input" placeholder="Tu Nombre Completo">
-                    <input type="tel" id="guest-phone" class="vip-input" placeholder="Tu Teléfono">
-                </div>
-
-                <button class="rsvp-btn" id="rsvp-btn" onclick="confirmarAsistencia(event)">CONFIRMAR ASISTENCIA</button>
-            </div>
-
-            <!-- Sobre -->
             <div class="envelope-container" id="envelope">
+                
+                <!-- ATRÁS DEL SOBRE -->
                 <div class="back"></div>
+                
+                <!-- LA TARJETA (AHORA SÍ, ADENTRO DEL SOBRE) -->
+                <div class="card" id="card" onclick="event.stopPropagation();">
+                    <div class="subtitle">Lanzamiento</div>
+                    <img src="logo.png" alt="Logo" class="logo-img" onerror="this.src='https://placehold.co/150x45/0a0a0a/d4af37?text=ORIGEN'">
+                    <div class="divider"></div>
+                    <p class="details">Un viaje en el tiempo, donde la cultura se sienta en tu mesa.</p>
+                    
+                    <div class="footer-info">
+                        <div class="info-block"><span class="label">FECHA</span><span class="value">14 AGO 2026</span></div>
+                        <div class="info-block"><span class="label">HORA</span><span class="value">18 HRS</span></div>
+                        <div class="info-block"><span class="label">LUGAR</span><span class="value">Café Brasilero</span></div>
+                    </div>
+
+                    <div class="rsvp-form" id="rsvp-form">
+                        <input type="text" id="guest-name" class="vip-input" placeholder="Tu Nombre Completo">
+                        <input type="tel" id="guest-phone" class="vip-input" placeholder="Tu Teléfono">
+                    </div>
+
+                    <button class="rsvp-btn" id="rsvp-btn" onclick="confirmarAsistencia(event)">CONFIRMAR ASISTENCIA</button>
+                </div>
+
+                <!-- FRENTE DEL SOBRE -->
                 <div class="front-left"></div>
                 <div class="front-right"></div>
                 <div class="front-bottom"></div>
-                <div class="flap" id="flap"><div class="seal">VIP</div></div>
+                
+                <!-- SOLAPA -->
+                <div class="flap" id="flap">
+                    <div class="flap-shape"></div>
+                    <div class="seal">VIP</div>
+                </div>
+                
             </div>
         </div>
     </div>
@@ -89,33 +106,63 @@
         envelope.addEventListener('click', () => {
             if (isOpen) return;
             isOpen = true;
+            
+            envelope.classList.add('open');
             flap.style.transform = 'rotateX(180deg)';
+            
             setTimeout(() => {
-                envelope.classList.add('hide-envelope');
-                card.classList.add('is-active');
+                flap.style.zIndex = '1';
+                card.style.transform = 'translateY(-170px)';
+                card.style.zIndex = '6'; // Lo pone por encima del frente del sobre al salir
             }, 500);
+
+            setTimeout(() => {
+                envelope.classList.add('hide-envelope'); // Oculta solo las solapas
+                card.classList.add('fullscreen'); // Agranda y centra la tarjeta
+            }, 1500);
         });
 
+        // ==========================================
+        // LÍNEA 138 - ¡PEGA AQUÍ TU ENLACE DEL SCRIPT!
+        // ==========================================
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVsWI13er8imv0ZeQ6NqJtH0Of2fZ0cV_SKsk7NRIgGQRz9PrdrAjBZpe42nmwwAai/exec';
         
         function confirmarAsistencia(e) {
+            e.stopPropagation(); // Evita que el clic afecte al sobre
             const form = document.getElementById('rsvp-form');
+            
             if (form.style.display !== 'block') {
                 form.style.display = 'block';
                 btn.innerHTML = "ENVIAR DATOS";
                 return;
             }
+            
             const name = document.getElementById('guest-name').value;
             const phone = document.getElementById('guest-phone').value;
-            if(!name || !phone) return alert("Completa los datos");
             
-            btn.innerHTML = "ENVIANDO...";
+            if(!name || !phone) {
+                alert("Por favor, completa tu nombre y teléfono.");
+                return;
+            }
+            
+            btn.innerHTML = "PROCESANDO...";
+            btn.style.pointerEvents = 'none'; // Deshabilita clics dobles
+            
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: `nombre=${encodeURIComponent(name)}&telefono=${encodeURIComponent(phone)}`
-            }).then(() => btn.innerHTML = "¡CONFIRMADO!");
+            }).then(() => {
+                form.style.display = 'none'; // Oculta el formulario al terminar
+                btn.innerHTML = "¡CONFIRMADO! ✔";
+                btn.style.background = "#d4af37";
+                btn.style.color = "#111";
+                btn.style.transform = "scale(1.05)";
+            }).catch(() => {
+                btn.innerHTML = "ERROR, REINTENTAR";
+                btn.style.pointerEvents = 'auto';
+            });
         }
     </script>
 </body>
