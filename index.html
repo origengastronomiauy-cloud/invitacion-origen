@@ -8,11 +8,26 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #2a2a2a 0%, #050505 100%); font-family: 'Montserrat', sans-serif; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        .scene { perspective: 1200px; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-        .wrapper { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: radial-gradient(circle at center, #2a2a2a 0%, #050505 100%); 
+            font-family: 'Montserrat', sans-serif; overflow: hidden; 
+            display: flex; justify-content: center; align-items: center; 
+        }
+        .scene { 
+            perspective: 1200px; width: 100%; height: 100%; 
+            display: flex; justify-content: center; align-items: center; 
+        }
+        .wrapper { 
+            display: flex; justify-content: center; align-items: center; 
+            width: 100%; height: 100%; 
+        }
         
-        .envelope-container { position: relative; width: 400px; height: 250px; cursor: pointer; transition: transform 0.4s ease; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9)); z-index: 1; }
+        .envelope-container { 
+            position: relative; width: 400px; height: 250px; 
+            cursor: pointer; transition: transform 0.4s ease; 
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.9)); z-index: 1; 
+        }
         .envelope-container.open { cursor: default; }
 
         .back { position: absolute; top:0; left:0; width:100%; height:100%; background: #111; z-index: 1; transition: opacity 1s ease; }
@@ -24,22 +39,38 @@
         .flap-shape { width: 100%; height: 100%; background: #222; clip-path: polygon(0 0, 100% 0, 50% 100%); }
         .seal { position: absolute; bottom: -25px; left: 50%; margin-left: -30px; width: 60px; height: 60px; background: linear-gradient(135deg, #d4af37, #8a6519); border: 2px solid #f9df9f; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #fff; font-family: 'Playfair Display', serif; font-weight: bold; font-size: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); }
 
-        .card { position: absolute; top: 10px; left: 10px; width: 380px; height: auto; min-height: 230px; background: #0a0a0a; z-index: 2; transition: all 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; padding: 20px; box-sizing: border-box; border: 1px solid #c59d5f; }
-        .card.fullscreen { transform: translateY(-40px) scale(1.2); z-index: 10; }
+        .card { 
+            position: absolute; top: 10px; left: 10px; 
+            width: 380px; 
+            height: 230px; /* ALTO FIJO: La mantiene perfectamente escondida en el sobre */
+            background: #0a0a0a; z-index: 2; 
+            transition: all 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); 
+            border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); 
+            display: flex; flex-direction: column; align-items: center; 
+            padding: 20px; box-sizing: border-box; border: 1px solid #c59d5f; 
+            overflow: hidden; /* CORTA lo que sobra para que no se vea por debajo */
+        }
+        
+        .card.fullscreen { 
+            height: 350px; /* CRECE mágicamente cuando sale para mostrar el formulario */
+            transform: translateY(-40px) scale(1.2) !important; 
+            z-index: 10 !important; 
+            overflow: visible; 
+        }
 
-        .logo-img { height: 45px; width: auto; margin-bottom: 10px; }
-        .subtitle { font-size: 9px; color: #c59d5f; text-transform: uppercase; letter-spacing: 3px; }
+        .logo-img { height: 45px; width: auto; margin-bottom: 5px; }
+        .subtitle { font-size: 9px; color: #c59d5f; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 5px; }
         .divider { width: 50px; height: 2px; background: #c59d5f; margin: 10px 0; }
-        .details { font-family: 'Playfair Display', serif; font-size: 13px; color: #d1d1d1; text-align: center; margin-bottom: 15px; }
+        .details { font-family: 'Playfair Display', serif; font-size: 12px; color: #d1d1d1; text-align: center; margin-bottom: 15px; }
         
         .footer-info { display: flex; justify-content: space-between; width: 100%; border-top: 1px solid #333; padding-top: 10px; margin-bottom: 15px; }
         .info-block { display: flex; flex-direction: column; align-items: center; }
         .label { font-size: 8px; color: #888; letter-spacing: 1px; }
         .value { font-size: 11px; font-weight: 600; color: #fdfbf7; margin-top: 4px; }
 
-        .rsvp-form { display: none; width: 100%; }
+        .rsvp-form { display: none; width: 100%; margin-bottom: 10px; }
         .vip-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #c59d5f; color: #fdfbf7; font-family: 'Montserrat', sans-serif; font-size: 12px; padding: 5px 0; margin-bottom: 10px; outline: none; box-sizing: border-box; }
-        .rsvp-btn { background: #111; color: #d4af37; border: 1px solid #d4af37; padding: 10px 20px; cursor: pointer; width: 100%; font-size: 12px; margin-top: 10px; font-weight: bold; transition: 0.3s; }
+        .rsvp-btn { background: #111; color: #d4af37; border: 1px solid #d4af37; padding: 10px 20px; cursor: pointer; width: 100%; font-size: 12px; font-weight: bold; transition: 0.3s; }
         .rsvp-btn:hover { background: #d4af37; color: #111; }
         
         .hide-envelope .back,
@@ -48,7 +79,7 @@
         .hide-envelope .front-bottom,
         .hide-envelope .flap {
             opacity: 0;
-            pointer-events: none; /* Esto permite hacer clic a través del sobre invisible hacia la tarjeta */
+            pointer-events: none; /* Esto hace que el botón sea 100% clickeable */
         }
     </style>
 </head>
@@ -57,19 +88,17 @@
         <div class="wrapper">
             <div class="envelope-container" id="envelope">
                 
-                <!-- ATRÁS DEL SOBRE -->
                 <div class="back"></div>
                 
-                <!-- LA TARJETA (AHORA SÍ, ADENTRO DEL SOBRE) -->
                 <div class="card" id="card" onclick="event.stopPropagation();">
                     <div class="subtitle">Lanzamiento</div>
-                    <img src="logo.png" alt="Logo" class="logo-img" onerror="this.src='https://placehold.co/150x45/0a0a0a/d4af37?text=ORIGEN'">
+                    <img src="logo.jpg" alt="Logo" class="logo-img" onerror="this.src='https://placehold.co/150x45/0a0a0a/d4af37?text=ORIGEN'">
                     <div class="divider"></div>
                     <p class="details">Un viaje en el tiempo, donde la cultura se sienta en tu mesa.</p>
                     
                     <div class="footer-info">
-                        <div class="info-block"><span class="label">FECHA</span><span class="value">14 AGO 2026</span></div>
-                        <div class="info-block"><span class="label">HORA</span><span class="value">18 HRS</span></div>
+                        <div class="info-block"><span class="label">FECHA</span><span class="value">30 JUL 2026</span></div>
+                        <div class="info-block"><span class="label">HORA</span><span class="value">19 HRS</span></div>
                         <div class="info-block"><span class="label">LUGAR</span><span class="value">Café Brasilero</span></div>
                     </div>
 
@@ -81,12 +110,10 @@
                     <button class="rsvp-btn" id="rsvp-btn" onclick="confirmarAsistencia(event)">CONFIRMAR ASISTENCIA</button>
                 </div>
 
-                <!-- FRENTE DEL SOBRE -->
                 <div class="front-left"></div>
                 <div class="front-right"></div>
                 <div class="front-bottom"></div>
                 
-                <!-- SOLAPA -->
                 <div class="flap" id="flap">
                     <div class="flap-shape"></div>
                     <div class="seal">VIP</div>
@@ -113,22 +140,23 @@
             setTimeout(() => {
                 flap.style.zIndex = '1';
                 card.style.transform = 'translateY(-170px)';
-                card.style.zIndex = '6'; // Lo pone por encima del frente del sobre al salir
+                card.style.zIndex = '6'; 
             }, 500);
 
             setTimeout(() => {
-                envelope.classList.add('hide-envelope'); // Oculta solo las solapas
-                card.classList.add('fullscreen'); // Agranda y centra la tarjeta
+                envelope.classList.add('hide-envelope'); 
+                card.style.transform = ''; // Limpiamos el salto para que el CSS tome el control
+                card.classList.add('fullscreen'); 
             }, 1500);
         });
 
         // ==========================================
-        // LÍNEA 138 - ¡PEGA AQUÍ TU ENLACE DEL SCRIPT!
+        // ¡PEGA AQUÍ TU ENLACE DEL SCRIPT!
         // ==========================================
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVsWI13er8imv0ZeQ6NqJtH0Of2fZ0cV_SKsk7NRIgGQRz9PrdrAjBZpe42nmwwAai/exec';
         
         function confirmarAsistencia(e) {
-            e.stopPropagation(); // Evita que el clic afecte al sobre
+            e.stopPropagation(); 
             const form = document.getElementById('rsvp-form');
             
             if (form.style.display !== 'block') {
@@ -146,7 +174,7 @@
             }
             
             btn.innerHTML = "PROCESANDO...";
-            btn.style.pointerEvents = 'none'; // Deshabilita clics dobles
+            btn.style.pointerEvents = 'none'; 
             
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
@@ -154,7 +182,7 @@
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 body: `nombre=${encodeURIComponent(name)}&telefono=${encodeURIComponent(phone)}`
             }).then(() => {
-                form.style.display = 'none'; // Oculta el formulario al terminar
+                form.style.display = 'none'; 
                 btn.innerHTML = "¡CONFIRMADO! ✔";
                 btn.style.background = "#d4af37";
                 btn.style.color = "#111";
